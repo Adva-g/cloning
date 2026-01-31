@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סימולציית שיבוט - הכבשה דולי</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #D0021B;
+            --bg: #F8F9FA;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            min-height: 600px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .step-indicator {
+            font-size: 1.1rem;
+            color: #555;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: #eef;
+            padding: 5px 15px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        /* Scene Area */
+        .scene {
+            height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Sheep Styles */
+        .sheep-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .sheep {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 150px;
+            transition: opacity 0.5s;
+            position: relative; /* For badges */
+        }
+
+        .sheep-icon {
+            font-size: 6rem;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .sheep-label {
+            font-weight: bold;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        .sheep-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Specific sheep modifications */
+        .sheep-white .sheep-icon { filter: brightness(1.2); }
+        .sheep-black .sheep-icon { filter: grayscale(1) brightness(0.4) sepia(0.3) hue-rotate(320deg); }
+        .sheep-surrogate .sheep-icon { filter: sepia(1); }
+
+        /* Cells */
+        .cell-stage {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            width: 100%;
+        }
+
+        .cell-wrapper {
+            position: relative;
+            transition: opacity 1s;
+        }
+
+        .cell {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 1s ease;
+            background: rgba(255,255,255,0.9);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .cell-a { border-color: var(--primary); }
+        .cell-b { border-color: #333; }
+        
+        .nucleus {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 1s ease;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .nuc-a { background-color: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        .nuc-b { background-color: #333; }
+
+        /* Animations */
+        @keyframes divide {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1) rotate(5deg); border-radius: 40%; }
+            100% { box-shadow: 0 0 0 4px var(--primary), 0 0 0 8px rgba(74, 144, 226, 0.3); }
+        }
+
+        @keyframes pregnancyPulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .hidden { display: none !important; }
+        .visible { display: flex !important; }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-family: inherit;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #357ABD;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #eef4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-right: 5px solid var(--primary);
+            text-align: right;
+            min-height: 80px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Result Section */
+        .result-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+            z-index: 100;
+        }
+        @keyframes fall { to { transform: translateY(600px) rotate(720deg); } }
+
+        .pregnancy-badge {
+            position: absolute;
+            font-size: 2rem;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pregnancyPulse 1.5s infinite;
+            z-index: 20;
+            color: #e91e63;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="mainTitle">מעבדה וירטואלית: שיבוט</h1>
+    <div class="step-indicator" id="stepCounter">הכרות</div>
+
+    <div class="info-box">
+        <span id="instructionText">הכירו את המשתתפות בניסוי השיבוט. לחצו על "התחל" כדי להיכנס למעבדה.</span>
+    </div>
+
+    <div class="scene">
+        <!-- Stage 1: The Sheep -->
+        <div class="sheep-container" id="sheepStage">
+            <div class="sheep sheep-white" id="sheepA">
+                <div class="sheep-icon">🐑</div>
+                <div class="sheep-label">כבשה א'</div>
+                <div class="sheep-desc">תורמת תא גוף<br>(לבנה)</div>
+            </div>
+            <div class="sheep sheep-black" id="sheepB">
+                <div class="sheep-icon">🐑</div>
+                <div class="sheep-label">כבשה ב'</div>
+                <div class="sheep-desc">תורמת ביצית<br>(שחורת פנים)</div>
+            </div>
+            <div class="sheep sheep-surrogate" id="sheepC">
+                <div class="sheep-icon">🐑</div>
+                <div class="sheep-label">כבשה ג'</div>
+                <div class="sheep-desc">אם פונדקאית<br>(מנוקדת)</div>
+            </div>
+        </div>
+
+        <!-- Stage 2: Cells -->
+        <div class="cell-stage" id="cellStage">
+            <div class="cell-wrapper" id="wrapperA" style="text-align:center;">
+                <div class="cell cell-a" id="cellA">
+                    <div class="nucleus nuc-a" id="nucA">2n</div>
+                </div>
+                <div style="font-size:0.9rem; margin-top:10px; font-weight:bold;">תא גוף</div>
+            </div>
+            <div class="cell-wrapper" id="wrapperB" style="text-align:center;">
+                <div class="cell cell-b" id="cellB">
+                    <div class="nucleus nuc-b" id="nucB">n</div>
+                </div>
+                <div style="font-size:0.9rem; margin-top:10px; font-weight:bold;">תא ביצית</div>
+            </div>
+        </div>
+        
+        <!-- Result Stage -->
+        <div id="babyStage" class="hidden" style="flex-direction:column; align-items:center;">
+            <div class="sheep-icon" style="font-size: 8rem; filter: brightness(1.2);">🐑</div>
+            <h3>מזל טוב! נולד טלה.</h3>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="nextBtn" onclick="nextStep()">התחל תהליך</button>
+        <div id="quizControls" class="hidden result-options">
+            <button onclick="checkAnswer('A')">כבשה א' (הלבנה)</button>
+            <button onclick="checkAnswer('B')">כבשה ב' (השחורה)</button>
+            <button onclick="checkAnswer('C')">כבשה ג' (הפונדקאית)</button>
+        </div>
+        <button id="resetBtn" onclick="location.reload()" class="hidden">התחל מחדש</button>
+    </div>
+</div>
+
+<script>
+    let step = 0; // 0 = Intro
+    const title = document.getElementById('mainTitle');
+    const instruction = document.getElementById('instructionText');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('stepCounter');
+
+    // Elements
+    const sheepStage = document.getElementById('sheepStage');
+    const cellStage = document.getElementById('cellStage');
+    const sheepA = document.getElementById('sheepA');
+    const sheepB = document.getElementById('sheepB');
+    const sheepC = document.getElementById('sheepC');
+    
+    const cellA = document.getElementById('cellA');
+    const cellB = document.getElementById('cellB');
+    const nucA = document.getElementById('nucA');
+    const nucB = document.getElementById('nucB');
+    const wrapperA = document.getElementById('wrapperA');
+
+    function nextStep() {
+        step++;
+        updateUI();
+    }
+
+    function updateUI() {
+        // Reset button state just in case
+        nextBtn.disabled = false;
+
+        switch(step) {
+            case 1: // Move to lab (Show cells)
+                counter.innerText = "שלב 1: בידוד תאים";
+                instruction.innerText = "לקחנו שני תאים: תא גוף מכבשה א' ותא ביצית מכבשה ב'. שימו לב לגרעינים.";
+                
+                sheepStage.style.opacity = '0';
+                setTimeout(() => {
+                    sheepStage.style.display = 'none';
+                    cellStage.style.display = 'flex';
+                }, 500);
+                
+                nextBtn.innerText = "הוצא גרעין תא גוף (2n)";
+                break;
+
+            case 2: // Extract Body Nucleus (2n)
+                instruction.innerText = "הוצאנו את הגרעין מתא הגוף. הוא מכיל 2n כרומוזומים - כל המידע התורשתי הדרוש ליצירת כבשה שלמה.";
+                
+                // Animation: Lift Nucleus A
+                nucA.style.transform = "translateY(-60px)";
+                nucA.style.boxShadow = "0 10px 20px rgba(74, 144, 226, 0.4)";
+                
+                nextBtn.innerText = "הוצא גרעין תא ביצית (n)";
+                break;
+
+            case 3: // Extract Egg Nucleus (n)
+                instruction.innerText = "כעת, אנו מסלקים את הגרעין מתא הביצית כדי לפנות מקום. הביצית נותרת ריקה ממטען גנטי.";
+                
+                // Animation: Remove Nucleus B (Throw away)
+                nucB.style.transform = "translateY(150px) rotate(45deg)";
+                nucB.style.opacity = "0";
+                
+                nextBtn.innerText = "הכנס גרעין 2n לביצית";
+                break;
+
+            case 4: // Fusion (Insertion)
+                counter.innerText = "שלב 2: איחוי תאים";
+                instruction.innerText = "אנו מחדירים את גרעין תא הגוף (2n) לתוך הביצית הריקה.";
+                
+                // Better approach: Hide old A, make new A appear in B
+                nucA.style.opacity = '0'; 
+                wrapperA.style.opacity = '0'; // Hide the empty body cell shell completely
+
+                const newNuc = document.createElement('div');
+                newNuc.className = 'nucleus nuc-a';
+                newNuc.innerText = "2n";
+                newNuc.style.opacity = '0';
+                newNuc.style.transform = 'scale(2)'; // Start big
+                cellB.appendChild(newNuc);
+
+                setTimeout(() => {
+                    newNuc.style.opacity = '1';
+                    newNuc.style.transform = 'scale(1)';
+                    cellB.style.borderColor = "#4A90E2"; // Optional: Cell B gets influence of A
+                }, 500);
+
+                nextBtn.innerText = "מה השלב הבא?";
+                break;
+
+            case 5: // Explain Electric Shock
+                counter.innerText = "שלב 3: עירור חשמלי";
+                instruction.innerText = "כרגע יש לנו ביצית עם גרעין, אבל היא 'ישנה'. בטבע, זרעון מעיר את הביצית. כאן, אנו משתמשים במכת חשמל כדי לדמות הפריה ולגרום לתא להתחיל להתחלק.";
+                nextBtn.innerText = "תן מכת חשמל!";
+                break;
+
+            case 6: // Shock & Division
+                // Visual Shock
+                document.body.style.backgroundColor = "#fff";
+                setTimeout(() => { document.body.style.backgroundColor = "var(--bg)"; }, 100);
+                setTimeout(() => { document.body.style.backgroundColor = "#fff"; }, 200);
+                setTimeout(() => { document.body.style.backgroundColor = "var(--bg)"; }, 300);
+
+                instruction.innerText = "החשמל עבד! התא מתחיל להתחלק ונוצר עובר (בלסטוציסט).";
+                
+                cellB.style.animation = "divide 2s infinite alternate";
+                
+                // Transform to embryo visual
+                setTimeout(() => {
+                    cellB.innerHTML = ""; 
+                    cellB.style.background = "radial-gradient(circle at 30% 30%, #4A90E2 4px, transparent 5px), white";
+                    cellB.style.backgroundSize = "15px 15px";
+                    cellB.style.boxShadow = "0 0 15px var(--primary)";
+                }, 1000);
+
+                nextBtn.innerText = "השתל ברחם הפונדקאית";
+                break;
+
+            case 7: // Implantation
+                counter.innerText = "שלב 4: הריון";
+                instruction.innerText = "העובר מוכן. אנו משתילים אותו ברחם של כבשה ג' (הפונדקאית). שימו לב לתנועה.";
+                
+                // Hide cell stage
+                cellStage.style.display = 'none';
+                
+                // Show sheep stage
+                sheepStage.style.display = 'flex';
+                sheepStage.style.opacity = '1';
+                
+                // Focus on surrogate
+                sheepA.style.opacity = '0.2'; 
+                sheepB.style.opacity = '0.2';
+                sheepC.style.transform = "scale(1.2)";
+                sheepC.style.zIndex = "10";
+                
+                // 1. Create flying embryo
+                const embryo = document.createElement('div');
+                embryo.style.width = '20px';
+                embryo.style.height = '20px';
+                embryo.style.background = 'radial-gradient(circle, #fff, #4A90E2)';
+                embryo.style.borderRadius = '50%';
+                embryo.style.position = 'absolute';
+                embryo.style.left = '50%'; // Start center
+                embryo.style.top = '50%'; 
+                embryo.style.transform = 'translate(-50%, -50%) scale(1)';
+                embryo.style.transition = 'all 1.5s ease-in-out';
+                embryo.style.zIndex = '100';
+                embryo.style.boxShadow = '0 0 15px #4A90E2';
+                document.querySelector('.scene').appendChild(embryo);
+
+                // 2. Move it to sheepC
+                setTimeout(() => {
+                    // Calculate target relative to scene
+                    const sceneRect = document.querySelector('.scene').getBoundingClientRect();
+                    const sheepRect = sheepC.getBoundingClientRect();
+                    
+                    const targetLeft = sheepRect.left - sceneRect.left + (sheepRect.width / 2);
+                    const targetTop = sheepRect.top - sceneRect.top + (sheepRect.height / 2);
+
+                    embryo.style.left = targetLeft + 'px';
+                    embryo.style.top = targetTop + 'px';
+                    embryo.style.opacity = '0'; // Fade out as it enters
+                    embryo.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                }, 100);
+
+                // 3. Add heart indicator
+                setTimeout(() => {
+                    embryo.remove();
+                    
+                    const belly = document.createElement('div');
+                    belly.innerText = "❤️"; 
+                    belly.className = "pregnancy-badge";
+                    sheepC.appendChild(belly);
+                }, 1600);
+
+                nextBtn.innerText = "המתן ללידה (לחץ כאן)";
+                break;
+
+            case 8: // Birth & Quiz
+                counter.innerText = "סיום";
+                sheepStage.style.display = 'none';
+                document.getElementById('babyStage').classList.remove('hidden');
+                document.getElementById('babyStage').classList.add('visible');
+                
+                instruction.innerText = "מזל טוב! נולד טלה בריא. חידה: למי הטלה דומה? (מי האמא הגנטית שלו?)";
+                instruction.style.borderRightColor = "#D0021B";
+                
+                nextBtn.style.display = 'none';
+                document.getElementById('quizControls').classList.remove('hidden');
+                document.getElementById('quizControls').classList.add('visible');
+                break;
+        }
+    }
+
+    function checkAnswer(choice) {
+        const resultStage = document.getElementById('babyStage');
+        const feedback = document.createElement('div');
+        feedback.style.marginTop = "20px";
+        feedback.style.fontWeight = "bold";
+        feedback.style.fontSize = "1.1rem";
+
+        // Remove old feedback
+        const oldFeedback = resultStage.querySelector('.feedback-msg');
+        if(oldFeedback) oldFeedback.remove();
+
+        if (choice === 'A') {
+            feedback.innerText = "נכון מאוד! 🏆 הטלה מכיל את ה-DNA של כבשה א' בלבד (2n), ולכן הוא העתק (שיבוט) מדויק שלה.";
+            feedback.style.color = "green";
+            createConfetti();
+            document.getElementById('quizControls').style.display = 'none';
+            document.getElementById('resetBtn').classList.remove('hidden');
+            document.getElementById('resetBtn').classList.add('visible');
+        } else if (choice === 'B') {
+            feedback.innerHTML = "לא בדיוק. הכבשה השחורה תרמה רק את הביצית הריקה, ללא DNA.<br>נסה שנית!";
+            feedback.style.color = "#D0021B";
+        } else {
+            feedback.innerHTML = "לא נכון. הפונדקאית רק נשאה את ההריון, היא לא תרמה שום מטען גנטי.<br>נסה שנית!";
+            feedback.style.color = "#D0021B";
+        }
+        
+        feedback.classList.add('feedback-msg');
+        resultStage.appendChild(feedback);
+    }
+
+    function createConfetti() {
+        const colors = ['#4A90E2', '#D0021B', '#50E3C2', '#F5A623'];
+        for (let i = 0; i < 60; i++) {
+            const conf = document.createElement('div');
+            conf.classList.add('confetti');
+            conf.style.left = Math.random() * 100 + 'vw';
+            conf.style.top = -10 + 'px';
+            conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            conf.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(conf);
+        }
+    }
+</script>
+
+</body>
+</html>
