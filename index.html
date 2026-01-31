@@ -17,7 +17,7 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -29,40 +29,40 @@
 
         .container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            padding: 30px;
-            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            max-width: 650px; /* הוקטן מ-800 */
             width: 100%;
             position: relative;
-            min-height: 600px;
+            min-height: 500px; /* הוקטן מ-600 */
         }
 
         h1 {
             color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem; /* הוקטן */
+            margin-bottom: 5px;
         }
 
         .step-indicator {
-            font-size: 1.1rem;
+            font-size: 1rem; /* הוקטן */
             color: #555;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background: #eef;
-            padding: 5px 15px;
-            border-radius: 15px;
+            padding: 4px 12px;
+            border-radius: 12px;
             display: inline-block;
         }
 
         /* Scene Area */
         .scene {
-            height: 350px;
+            height: 280px; /* הוקטן מ-350 */
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border-bottom: 2px solid #f0f0f0;
         }
 
@@ -79,13 +79,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 150px;
+            width: 110px; /* הוקטן מ-150 */
             transition: opacity 0.5s;
-            position: relative; /* For badges */
+            position: relative; 
         }
 
         .sheep-icon {
-            font-size: 6rem;
+            font-size: 4.5rem; /* הוקטן מ-6rem */
             position: relative;
             transition: transform 0.3s;
         }
@@ -93,12 +93,13 @@
         .sheep-label {
             font-weight: bold;
             margin-top: 5px;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         .sheep-desc {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #666;
+            line-height: 1.2;
         }
 
         /* Specific sheep modifications */
@@ -111,7 +112,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            gap: 80px;
+            gap: 50px; /* הוקטן מ-80 */
             width: 100%;
         }
 
@@ -121,25 +122,25 @@
         }
 
         .cell {
-            width: 120px;
-            height: 120px;
+            width: 90px; /* הוקטן מ-120 */
+            height: 90px; /* הוקטן מ-120 */
             border-radius: 50%;
-            border: 5px solid;
+            border: 4px solid;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             transition: all 1s ease;
             background: rgba(255,255,255,0.9);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
         }
 
         .cell-a { border-color: var(--primary); }
         .cell-b { border-color: #333; }
         
         .nucleus {
-            width: 50px;
-            height: 50px;
+            width: 35px; /* הוקטן מ-50 */
+            height: 35px; /* הוקטן מ-50 */
             border-radius: 50%;
             position: absolute;
             transition: all 1s ease;
@@ -149,10 +150,10 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
-        .nuc-a { background-color: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        .nuc-a { background-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
         .nuc-b { background-color: #333; }
 
         /* Animations */
@@ -175,20 +176,20 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         button {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 10px 20px; /* הוקטן */
             border-radius: 50px;
-            font-size: 1.1rem;
+            font-size: 1rem; /* הוקטן */
             cursor: pointer;
             transition: transform 0.2s, background 0.2s;
             font-family: inherit;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
         }
 
         button:hover {
@@ -206,13 +207,13 @@
         /* Info Box */
         .info-box {
             background: #eef4fc;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
-            margin-bottom: 20px;
-            border-right: 5px solid var(--primary);
+            margin-bottom: 15px;
+            border-right: 4px solid var(--primary);
             text-align: right;
-            min-height: 80px;
-            font-size: 1.1rem;
+            min-height: 60px; /* הוקטן */
+            font-size: 1rem; /* הוקטן */
             display: flex;
             align-items: center;
         }
@@ -220,7 +221,7 @@
         /* Result Section */
         .result-options {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
             margin-top: 10px;
             flex-wrap: wrap;
@@ -228,17 +229,17 @@
         
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: #f00;
             animation: fall linear forwards;
             z-index: 100;
         }
-        @keyframes fall { to { transform: translateY(600px) rotate(720deg); } }
+        @keyframes fall { to { transform: translateY(500px) rotate(720deg); } }
 
         .pregnancy-badge {
             position: absolute;
-            font-size: 2rem;
+            font-size: 1.8rem;
             top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -286,19 +287,19 @@
                 <div class="cell cell-a" id="cellA">
                     <div class="nucleus nuc-a" id="nucA">2n</div>
                 </div>
-                <div style="font-size:0.9rem; margin-top:10px; font-weight:bold;">תא גוף</div>
+                <div style="font-size:0.8rem; margin-top:8px; font-weight:bold;">תא גוף</div>
             </div>
             <div class="cell-wrapper" id="wrapperB" style="text-align:center;">
                 <div class="cell cell-b" id="cellB">
                     <div class="nucleus nuc-b" id="nucB">n</div>
                 </div>
-                <div style="font-size:0.9rem; margin-top:10px; font-weight:bold;">תא ביצית</div>
+                <div style="font-size:0.8rem; margin-top:8px; font-weight:bold;">תא ביצית</div>
             </div>
         </div>
         
         <!-- Result Stage -->
         <div id="babyStage" class="hidden" style="flex-direction:column; align-items:center;">
-            <div class="sheep-icon" style="font-size: 8rem; filter: brightness(1.2);">🐑</div>
+            <div class="sheep-icon" style="font-size: 6rem; filter: brightness(1.2);">🐑</div>
             <h3>מזל טוב! נולד טלה.</h3>
         </div>
     </div>
@@ -361,7 +362,7 @@
                 instruction.innerText = "הוצאנו את הגרעין מתא הגוף. הוא מכיל 2n כרומוזומים - כל המידע התורשתי הדרוש ליצירת כבשה שלמה.";
                 
                 // Animation: Lift Nucleus A
-                nucA.style.transform = "translateY(-60px)";
+                nucA.style.transform = "translateY(-50px)"; // הותאם לגודל החדש
                 nucA.style.boxShadow = "0 10px 20px rgba(74, 144, 226, 0.4)";
                 
                 nextBtn.innerText = "הוצא גרעין תא ביצית (n)";
@@ -371,7 +372,7 @@
                 instruction.innerText = "כעת, אנו מסלקים את הגרעין מתא הביצית כדי לפנות מקום. הביצית נותרת ריקה ממטען גנטי.";
                 
                 // Animation: Remove Nucleus B (Throw away)
-                nucB.style.transform = "translateY(150px) rotate(45deg)";
+                nucB.style.transform = "translateY(120px) rotate(45deg)"; // הותאם לגודל החדש
                 nucB.style.opacity = "0";
                 
                 nextBtn.innerText = "הכנס גרעין 2n לביצית";
@@ -422,7 +423,7 @@
                 setTimeout(() => {
                     cellB.innerHTML = ""; 
                     cellB.style.background = "radial-gradient(circle at 30% 30%, #4A90E2 4px, transparent 5px), white";
-                    cellB.style.backgroundSize = "15px 15px";
+                    cellB.style.backgroundSize = "15px 15px"; // גודל דוגמה מוקטן מעט
                     cellB.style.boxShadow = "0 0 15px var(--primary)";
                 }, 1000);
 
@@ -448,8 +449,8 @@
                 
                 // 1. Create flying embryo
                 const embryo = document.createElement('div');
-                embryo.style.width = '20px';
-                embryo.style.height = '20px';
+                embryo.style.width = '15px'; // הוקטן
+                embryo.style.height = '15px'; // הוקטן
                 embryo.style.background = 'radial-gradient(circle, #fff, #4A90E2)';
                 embryo.style.borderRadius = '50%';
                 embryo.style.position = 'absolute';
@@ -458,7 +459,7 @@
                 embryo.style.transform = 'translate(-50%, -50%) scale(1)';
                 embryo.style.transition = 'all 1.5s ease-in-out';
                 embryo.style.zIndex = '100';
-                embryo.style.boxShadow = '0 0 15px #4A90E2';
+                embryo.style.boxShadow = '0 0 10px #4A90E2';
                 document.querySelector('.scene').appendChild(embryo);
 
                 // 2. Move it to sheepC
@@ -508,9 +509,9 @@
     function checkAnswer(choice) {
         const resultStage = document.getElementById('babyStage');
         const feedback = document.createElement('div');
-        feedback.style.marginTop = "20px";
+        feedback.style.marginTop = "15px";
         feedback.style.fontWeight = "bold";
-        feedback.style.fontSize = "1.1rem";
+        feedback.style.fontSize = "1rem";
 
         // Remove old feedback
         const oldFeedback = resultStage.querySelector('.feedback-msg');
